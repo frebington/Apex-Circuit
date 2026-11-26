@@ -1,0 +1,142 @@
+{
+  "entities": {
+    "LapRecord": {
+      "title": "LapRecord",
+      "description": "Fastest single-lap record submitted by an authenticated driver for a specific circuit.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the driver who set this record.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "driverName": {
+          "type": "string",
+          "description": "Public racing display name shown on the leaderboard.",
+          "minLength": 1,
+          "maxLength": 16
+        },
+        "trackId": {
+          "type": "string",
+          "description": "Identifier of the circuit where the lap was recorded.",
+          "enum": [
+            "alpine_gorge",
+            "redrock_crossing",
+            "frostpeak_pass",
+            "coastal_causeway",
+            "sunset_valley"
+          ]
+        },
+        "bestLapMs": {
+          "type": "integer",
+          "description": "Fastest lap time in milliseconds (5000..600000)."
+        },
+        "chassisId": {
+          "type": "string",
+          "description": "Low-poly car chassis model used for the lap.",
+          "enum": [
+            "gt_coupe",
+            "formula_open",
+            "rally_hatch",
+            "hyper_prototype"
+          ]
+        },
+        "paintFinish": {
+          "type": "string",
+          "description": "PBR paint material finish on the car.",
+          "enum": [
+            "gloss",
+            "metallic",
+            "matte",
+            "chrome"
+          ]
+        },
+        "color": {
+          "type": "string",
+          "description": "Hex primary paint color.",
+          "minLength": 7,
+          "maxLength": 7,
+          "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when this record was created or improved."
+        }
+      },
+      "required": [
+        "uid",
+        "driverName",
+        "trackId",
+        "bestLapMs",
+        "chassisId",
+        "paintFinish",
+        "color",
+        "updatedAt"
+      ]
+    },
+    "DailyChallengeProgress": {
+      "title": "DailyChallengeProgress",
+      "description": "Authenticated driver's daily challenge streak and unlocked unique livery colors.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the driver.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "currentStreak": {
+          "type": "integer",
+          "description": "Consecutive days completed (1..3650)."
+        },
+        "bestStreak": {
+          "type": "integer",
+          "description": "Highest consecutive daily streak achieved (1..3650)."
+        },
+        "totalCompleted": {
+          "type": "integer",
+          "description": "Cumulative number of daily challenges completed."
+        },
+        "lastCompletedDate": {
+          "type": "string",
+          "description": "Most recent UTC challenge date completed in YYYY-MM-DD format.",
+          "minLength": 10,
+          "maxLength": 10,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "unlockedLiveryIds": {
+          "type": "array",
+          "description": "Unique daily reward livery IDs unlocked by the player (1..8 items)."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when streak progress was last updated."
+        }
+      },
+      "required": [
+        "uid",
+        "currentStreak",
+        "bestStreak",
+        "totalCompleted",
+        "lastCompletedDate",
+        "unlockedLiveryIds",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/lapRecords/{recordId}": {
+      "schema": { "$ref": "#/entities/LapRecord" },
+      "description": "Global per-track personal best lap times keyed by {uid}_{trackId}."
+    },
+    "/dailyChallenges/{userId}": {
+      "schema": { "$ref": "#/entities/DailyChallengeProgress" },
+      "description": "Owner-only daily challenge streak state and unlocked reward liveries."
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Apex Circuit",
+  "description": "A low-poly 3D online multiplayer racing game with pure driving physics and diverse tracks featuring tunnels, bridges, and distinct climates.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
